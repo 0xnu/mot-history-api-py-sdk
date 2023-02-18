@@ -13,8 +13,17 @@ class CheckMOTAPI:
     def make_request(self, url, params=None):
         headers = self.get_headers()
         response = requests.get(url, headers=headers, params=params)
-        response.raise_for_status()
-        return response.json()
+        try:
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as error:
+            print(f"HTTP error occurred: {error}")
+            return None
+        try:
+            data = response.json()
+        except ValueError:
+            print(f"Failed to parse response as JSON: {response.text}")
+            return None
+        return data
 
 
 class Registration(CheckMOTAPI):
