@@ -5,7 +5,7 @@ from setuptools import setup, find_packages  # noqa: H301
 from distutils.core import Extension
 
 NAME = "mot-history-api-py-sdk"
-VERSION = "0.0.2"
+VERSION = "0.0.3"
 REQUIRES = ["requests"]
 
 # read the contents of your README file
