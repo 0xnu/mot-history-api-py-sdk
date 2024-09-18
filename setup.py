@@ -5,7 +5,7 @@ from setuptools import setup, find_packages  # noqa: H301
 from distutils.core import Extension
 
 NAME = "mot-history-api-py-sdk"
-VERSION = "0.0.3"
+VERSION = "1.0.0"
 REQUIRES = ["requests"]
 
 # read the contents of your README file
@@ -28,7 +28,7 @@ setup(
     long_description_content_type="text/x-rst",
     author="Finbarrs Oketunji",
     author_email="f@finbarrs.eu",
-    url="https://dvsa.github.io/mot-history-api-documentation/",
+    url="https://documentation.history.mot.api.gov.uk/",
     packages=find_packages(),
     include_package_data=True,
     install_requires=REQUIRES,
@@ -37,7 +37,7 @@ setup(
     project_urls={
         "Bug Tracker": "https://github.com/0xnu/mot-history-api-sdk/issues",
         "Changes": "https://github.com/0xnu/mot-history-api-sdk/blob/main/CHANGELOG.md",
-        "Documentation": "https://dvsa.github.io/mot-history-api-documentation/",
+        "Documentation": "https://documentation.history.mot.api.gov.uk/",
         "Source Code": "https://github.com/0xnu/mot-history-api-sdk",
     },
     classifiers=[

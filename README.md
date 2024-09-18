@@ -1,21 +1,21 @@
-# MOT History API Python SDK
+## MOT History API Python SDK
 
 [![PyPI version](https://badge.fury.io/py/mot-history-api-py-sdk.svg)](https://badge.fury.io/py/mot-history-api-py-sdk)
 
-The SDK provides convenient access to the [MOT History API](https://dvsa.github.io/mot-history-api-documentation/) for applications written in the Python programming language.
+The SDK provides convenient access to the [MOT History API](https://documentation.history.mot.api.gov.uk/) for applications written in the Python programming language.
 
-## Requirements
+### Requirements
 
 Python 2.7 and later.
 
-## Setup
+### Setup
 
 You can install this package by using the pip tool and installing:
 
 ```python
 pip install mot-history-api-py-sdk
 
-## OR
+## OR ##
 
 easy_install mot-history-api-py-sdk
 ```
@@ -28,64 +28,42 @@ python setup.py install --user
 ## or `sudo python setup.py install` to install the package for all users
 ```
 
-## Usage Example
+### Tests
 
-```python
-from motapi.motdata import *
+Export environment variables:
 
-api_key = "<your-api-key>" # your api key
-registration = "ML58FOU" # example of a vehicle registration
-page = 1 # pagination
-date = "20230201" # date must be five weeks from the current date
-vehicle_id = "<enter your vehicle id here>" # unique vehicle id for vehicles that have had an MOT test
-
-reg = Registration(api_key)
-reg_data = reg.get_data(registration)
-if reg_data is not None:
-    print(reg_data)
-else:
-    print("Failed to retrieve data!")
-
-p = Page(api_key)
-page_data = p.get_data(page)
-if page_data is not None:
-    print(page_data)
-else:
-    print("Failed to retrieve data!")
-
-d = Date(api_key)
-date_data = d.get_data(date, page)
-if date_data is not None:
-    print(date_data)
-else:
-    print("Failed to retrieve data!")
-
-v = VehicleID(api_key)
-vehicle_data = v.get_data(vehicle_id)
-if vehicle_data is not None:
-    print(vehicle_data)
-else:
-    print("Failed to retrieve data!")
+```sh
+export MOT_CLIENT_ID=
+export MOT_CLIENT_SECRET=
+export MOT_API_KEY=
 ```
 
-## Setting up a MOT History API
+Now, you can execute this command: `python3 -m test`
 
-You can use this support form to request an [API Key](https://www.smartsurvey.co.uk/s/MOT_History_TradeAPI_Access_and_Support?).
+Unset the environment variables after completing the tests:
+
+```sh
+unset MOT_CLIENT_ID && unset MOT_CLIENT_SECRET && unset MOT_API_KEY
+```
+
+### Setting up a MOT History API
+
+You can use this support form to request an [API Key](https://documentation.history.mot.api.gov.uk/mot-history-api/register).
 
 
-## Using the MOT History API
+### Using the MOT History API
 
-You can read the [API documentation](https://dvsa.github.io/mot-history-api-documentation/) to understand what's possible with the MOT History API. If you need further assistance, don't hesitate to [contact the DVSA](https://www.smartsurvey.co.uk/s/MOT_History_TradeAPI_Access_and_Support?).
+You can read the [API documentation](https://documentation.history.mot.api.gov.uk/) to understand what's possible with the MOT History API. If you need further assistance, don't hesitate to [contact the DVSA](https://documentation.history.mot.api.gov.uk/mot-history-api/support).
 
 
-## License
+### License
 
 This project is licensed under the [MIT License](./LICENSE).
 
 
-## Copyright
+### Copyright
 
-(c) 2023 [Finbarrs Oketunji](https://finbarrs.eu).
+(c) 2023 - 2024 [Finbarrs Oketunji](https://finbarrs.eu).
 
 The MOT History API Python SDK is Licensed under the [Open Government Licence v3.0](
 https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
