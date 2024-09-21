@@ -45,6 +45,7 @@ Tests
 Export environment variables:
 
 .. code-block:: bash
+
     export MOT_CLIENT_ID=
     export MOT_CLIENT_SECRET=
     export MOT_API_KEY=
@@ -54,6 +55,7 @@ Now, you can execute this command: `python3 -m test`
 Unset the environment variables after completing the tests:
 
 .. code-block:: bash
+
     unset MOT_CLIENT_ID && unset MOT_CLIENT_SECRET && unset MOT_API_KEY
 
 Developers/Engineers can run tests in two scenarios:
