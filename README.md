@@ -46,6 +46,14 @@ Unset the environment variables after completing the tests:
 unset MOT_CLIENT_ID && unset MOT_CLIENT_SECRET && unset MOT_API_KEY
 ```
 
+Developers/Engineers can run tests in two scenarios:
+
++ **With real credentials**: They set the environment variables, and the tests use the live API connection.
+
++ **Without credentials**: The tests run using a mock client, allowing basic functionality checks without a live API connection.
+
+The flexibility supports real integration testing and quick, credential-free checks during development.
+
 ### Setting up a MOT History API
 
 You can use this support form to request an [API Key](https://documentation.history.mot.api.gov.uk/mot-history-api/register).

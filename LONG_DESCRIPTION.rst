@@ -23,14 +23,46 @@ You can install this package by using the pip tool and installing:
 
 .. code-block:: bash
 
-	$ pip install mot-history-api-py-sdk
+	pip install mot-history-api-py-sdk
 
 Or:
 
 .. code-block:: bash
 
-	$ easy_install mot-history-api-py-sdk
+	easy_install mot-history-api-py-sdk
 
+Install from source with:
+
+.. code-block:: bash
+
+    python setup.py install --user
+
+Or, `sudo python setup.py install` to install the package for all users.
+
+Tests
+------
+
+Export environment variables:
+
+.. code-block:: bash
+    export MOT_CLIENT_ID=
+    export MOT_CLIENT_SECRET=
+    export MOT_API_KEY=
+
+Now, you can execute this command: `python3 -m test`
+
+Unset the environment variables after completing the tests:
+
+.. code-block:: bash
+    unset MOT_CLIENT_ID && unset MOT_CLIENT_SECRET && unset MOT_API_KEY
+
+Developers/Engineers can run tests in two scenarios:
+
++ **With real credentials**: They set the environment variables, and the tests use the live API connection.
+
++ **Without credentials**: The tests run using a mock client, allowing basic functionality checks without a live API connection.
+
+The flexibility supports real integration testing and quick, credential-free checks during development.
 
 Request MOT History API Key
 ---------------------------
