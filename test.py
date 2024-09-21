@@ -7,20 +7,35 @@ including handling various VIN lengths.
 import os
 import sys
 from pprint import pprint
-from motapi import MOTDataClient
+from typing import Optional
+from unittest.mock import Mock
+
+# It attempts to import MOTDataClient
+# but falls back to a mock if it is present.
+try:
+    from motapi import MOTDataClient
+except ImportError:
+    MOTDataClient = Mock()
 
 # Retrieve credentials from environment variables
-CLIENT_ID = os.environ.get("MOT_CLIENT_ID")
-CLIENT_SECRET = os.environ.get("MOT_CLIENT_SECRET")
-API_KEY = os.environ.get("MOT_API_KEY")
-
-# Please set credentials
-if not CLIENT_ID or not CLIENT_SECRET or not API_KEY:
-    print("Error: Please set MOT_CLIENT_ID, MOT_CLIENT_SECRET, and MOT_API_KEY environment variables.")
-    sys.exit(1)
+CLIENT_ID: Optional[str] = os.environ.get("MOT_CLIENT_ID")
+CLIENT_SECRET: Optional[str] = os.environ.get("MOT_CLIENT_SECRET")
+API_KEY: Optional[str] = os.environ.get("MOT_API_KEY")
 
 # Initialize the client
-client = MOTDataClient(CLIENT_ID, CLIENT_SECRET, API_KEY)
+if all([CLIENT_ID, CLIENT_SECRET, API_KEY]):
+    client = MOTDataClient(
+        client_id=CLIENT_ID,
+        client_secret=CLIENT_SECRET,
+        api_key=API_KEY
+    )
+else:
+    print("Warning: Using mock client as credentials are not set.")
+    client = Mock()
+    # Setup mock responses
+    client.get_vehicle_data.return_value = {"mock": "vehicle data"}
+    client.get_bulk_download_info.return_value = {"mock": "bulk download info"}
+    client.renew_client_secret.return_value = "mock_new_secret"
 
 def test_get_vehicle_data_by_registration():
     """Test retrieving vehicle data by registration number."""

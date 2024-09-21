@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.1 - 2023-09-21
+* Updated: test.py, README.md, and LONG_DESCRIPTION.rst
+
 ## 1.0.0 - 2023-09-19
 * New MOT History API
 
