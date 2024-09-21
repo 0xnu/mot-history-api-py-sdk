@@ -11,7 +11,7 @@ from typing import Optional
 from unittest.mock import Mock
 
 # It attempts to import MOTDataClient
-# but falls back to a mock if it is present.
+# but falls back to a mock if it is not present.
 try:
     from motapi import MOTDataClient
 except ImportError:
