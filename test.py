@@ -1,11 +1,12 @@
 """Test script for MOT Data API Client.
 
 It tests all the main functionalities of the MOT Data API Client,
-including handling various VIN lengths.
+including handling various VIN lengths and rate limiting scenarios.
 """
 
 import os
 import sys
+import time
 from pprint import pprint
 from typing import Optional
 from unittest.mock import Mock
@@ -14,8 +15,10 @@ from unittest.mock import Mock
 # but falls back to a mock if it is not present.
 try:
     from motapi import MOTDataClient
+    from motapi.ratelimit import RateLimitExceeded
 except ImportError:
     MOTDataClient = Mock()
+    RateLimitExceeded = Exception
 
 # Retrieve credentials from environment variables
 CLIENT_ID: Optional[str] = os.environ.get("MOT_CLIENT_ID")
@@ -108,6 +111,23 @@ def test_edge_case_vins():
         except Exception as e:
             print(f"Error retrieving data for VIN {vin}: {e}")
 
+def test_rate_limiting():
+    """Test rate limiting functionality."""
+    print("\nTesting rate limiting:")
+    start_time = time.time()
+    request_count = 0
+    try:
+        while time.time() - start_time < 5:  # Run for 5 seconds
+            client.get_vehicle_data("ML58FOU")
+            request_count += 1
+    except RateLimitExceeded as e:
+        print(f"Rate limit exceeded after {request_count} requests in {time.time() - start_time:.2f} seconds")
+        print(f"Rate limit exception details: {e}")
+    except Exception as e:
+        print(f"Unexpected error during rate limit testing: {e}")
+    else:
+        print(f"Made {request_count} requests in 5 seconds without hitting rate limit")
+
 if __name__ == "__main__":
     print("Starting MOT Data API Client tests...")
 
@@ -118,5 +138,6 @@ if __name__ == "__main__":
     test_renew_client_secret()
     test_invalid_vehicle_identifier()
     test_edge_case_vins()
+    test_rate_limiting()
 
     print("\nAll tests completed.")

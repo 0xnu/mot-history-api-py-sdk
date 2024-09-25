@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.0.2 - 2023-09-25
+* Added:
+  + ratelimit.py
+
+* Modified:
+  + __init__.py
+  + motdata.py
+  + test.py
+  + setup.py
+  + VERSION
+
 ## 1.0.1 - 2023-09-21
 * Updated: test.py, README.md, and LONG_DESCRIPTION.rst
 

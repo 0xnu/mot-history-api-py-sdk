@@ -1,8 +1,9 @@
 """MOT Data API Client for interacting with the MOT history API."""
 
 from typing import Dict, Optional
+from .ratelimit import limits, sleep_and_retry, RateLimitExceeded
 import requests
-
+import time
 
 class MOTHistoryAPI:
     """Base class for interacting with the MOT history API."""
@@ -10,6 +11,11 @@ class MOTHistoryAPI:
     BASE_URL = "https://history.mot.api.gov.uk/v1/trade/vehicles"
     TOKEN_URL = "https://login.microsoftonline.com/a455b827-244f-4c97-b5b4-ce5d13b4d00c/oauth2/v2.0/token"
     SCOPE_URL = "https://tapi.dvsa.gov.uk/.default"
+
+    # Rate Limiting
+    QUOTA_LIMIT = 500000  # Maximum number of requests per day
+    BURST_LIMIT = 10  # Maximum number of requests in a short burst
+    RPS_LIMIT = 15  # Average number of requests per second
 
     def __init__(self, client_id: str, client_secret: str, api_key: str):
         """
@@ -24,6 +30,8 @@ class MOTHistoryAPI:
         self.client_secret = client_secret
         self.api_key = api_key
         self.access_token = self._get_access_token()
+        self.request_count = 0
+        self.last_request_time = time.time()
 
     def _get_access_token(self) -> str:
         """
@@ -57,9 +65,12 @@ class MOTHistoryAPI:
             "X-API-Key": self.api_key,
         }
 
+    @sleep_and_retry
+    @limits(calls=BURST_LIMIT, period=1)
+    @limits(calls=QUOTA_LIMIT, period=86400)
     def _make_request(self, endpoint: str, params: Optional[Dict] = None) -> Dict:
         """
-        Make a GET request to the API.
+        Make a GET request to the API with rate limiting.
 
         Args:
             endpoint (str): The API endpoint.
@@ -70,12 +81,23 @@ class MOTHistoryAPI:
 
         Raises:
             requests.exceptions.HTTPError: If the API request fails.
+            RateLimitExceeded: If the rate limit is exceeded.
         """
+        # RPS Limiting
+        current_time = time.time()
+        time_since_last_request = current_time - self.last_request_time
+        if time_since_last_request < 1 / self.RPS_LIMIT:
+            sleep_time = (1 / self.RPS_LIMIT) - time_since_last_request
+            raise RateLimitExceeded("RPS limit exceeded", sleep_time)
+
         url = f"{self.BASE_URL}/{endpoint}"
         response = requests.get(url, headers=self._get_headers(), params=params)
         response.raise_for_status()
-        return response.json()
 
+        self.request_count += 1
+        self.last_request_time = time.time()
+
+        return response.json()
 
 class VehicleData(MOTHistoryAPI):
     """Class for retrieving vehicle data."""
@@ -104,7 +126,6 @@ class VehicleData(MOTHistoryAPI):
         """
         return self._make_request(f"vin/{vin}")
 
-
 class BulkData(MOTHistoryAPI):
     """Class for retrieving bulk MOT history data."""
 
@@ -116,7 +137,6 @@ class BulkData(MOTHistoryAPI):
             Dict: Bulk and delta file information.
         """
         return self._make_request("bulk-download")
-
 
 class CredentialsManager(MOTHistoryAPI):
     """Class for managing API credentials."""
@@ -142,7 +162,6 @@ class CredentialsManager(MOTHistoryAPI):
         response = requests.put(url, headers=self._get_headers(), json=data)
         response.raise_for_status()
         return response.json()["clientSecret"]
-
 
 class MOTDataClient:
     """Main client class for interacting with the MOT history API."""
